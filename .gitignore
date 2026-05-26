@@ -1,0 +1,14 @@
+# IDE
+.idea/
+*.iml
+
+# Compiled output
+out/
+zenlang3/out/
+
+# Temp build files
+sources.txt
+
+# OS files
+Thumbs.db
+.DS_Store

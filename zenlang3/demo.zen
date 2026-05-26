@@ -1,0 +1,322 @@
+// ================================================================
+//  Zen-Lang v3  —  Full Feature Demo
+//  Covers: structs, maps, foreach, switch, const, enum, file I/O
+// ================================================================
+
+// ── 1. CONSTANTS ─────────────────────────────────────────────────
+const int    MAX_USERS = 100;
+const float  PI        = 3.14159;
+const string APP_NAME  = "Zen-Lang v3";
+
+println("=== Constants ===");
+println(APP_NAME);
+println(MAX_USERS);
+println(PI);
+
+// ── 2. ENUM ───────────────────────────────────────────────────────
+enum Direction { NORTH, SOUTH, EAST, WEST }
+enum Status    { ACTIVE, INACTIVE, PENDING }
+enum Color     { RED, GREEN, BLUE }
+
+println("\n=== Enums ===");
+Direction dir = Direction.NORTH;
+println(dir);
+
+Status s = Status.ACTIVE;
+if (s == Status.ACTIVE) {
+    println("User is active");
+}
+
+/* Enum in switch */
+switch (dir) {
+    case Direction.NORTH: {
+        println("Going North");
+    }
+    case Direction.SOUTH: {
+        println("Going South");
+    }
+    default: {
+        println("Going somewhere else");
+    }
+}
+
+// ── 3. STRUCTS + CONSTRUCTOR + METHODS ───────────────────────────
+println("\n=== Structs ===");
+
+struct Point {
+    float x;
+    float y;
+
+    Point(float x, float y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    float distanceTo(float ox, float oy) {
+        float dx = this.x - ox;
+        float dy = this.y - oy;
+        return sqrt(dx * dx + dy * dy);
+    }
+
+    string toString() {
+        return "(" + this.x + ", " + this.y + ")";
+    }
+
+    void move(float dx, float dy) {
+        this.x = this.x + dx;
+        this.y = this.y + dy;
+    }
+}
+
+Point p1 = Point(3.0, 4.0);
+Point p2 = Point(0.0, 0.0);
+
+println(p1.toString());
+println(p1.distanceTo(0.0, 0.0));   // 5.0
+p1.move(1.0, 1.0);
+println(p1.toString());             // (4.0, 5.0)
+println(p1.x);
+println(p1.y);
+
+/* Struct with more logic */
+struct BankAccount {
+    string owner;
+    float  balance;
+
+    BankAccount(string owner, float startBalance) {
+        this.owner   = owner;
+        this.balance = startBalance;
+    }
+
+    void deposit(float amount) {
+        if (amount <= 0.0) {
+            println("Deposit amount must be positive");
+            return;
+        }
+        this.balance = this.balance + amount;
+    }
+
+    bool withdraw(float amount) {
+        if (amount > this.balance) {
+            println("Insufficient funds");
+            return false;
+        }
+        this.balance = this.balance - amount;
+        return true;
+    }
+
+    void printStatement() {
+        println(this.owner + " — Balance: " + this.balance);
+    }
+}
+
+BankAccount acc = BankAccount("Ayush", 1000.0);
+acc.printStatement();
+acc.deposit(500.0);
+acc.withdraw(200.0);
+acc.printStatement();
+
+// ── 4. MAP / DICTIONARY ───────────────────────────────────────────
+println("\n=== Maps ===");
+
+map scores = {"Alice": 95, "Bob": 87, "Charlie": 92};
+println(scores);
+println(scores["Alice"]);
+
+// Add / update entries
+scores["Dave"] = 78;
+scores["Alice"] = 98;
+println(scores);
+
+// Map methods
+println(scores.size());
+println(scores.keys());
+println(scores.containsKey("Bob"));
+scores.remove("Dave");
+println(scores);
+
+// Nested map
+map config = {
+    "host": "localhost",
+    "port": "8080",
+    "debug": "true"
+};
+println(config["host"] + ":" + config["port"]);
+
+// ── 5. FOREACH ────────────────────────────────────────────────────
+println("\n=== Foreach ===");
+
+array fruits = ["apple", "banana", "cherry", "date"];
+
+foreach (string fruit in fruits) {
+    println(fruit);
+}
+
+// Foreach over numbers with processing
+array numbers = [3, 7, 2, 9, 4, 6, 1, 8, 5];
+int   total   = 0;
+foreach (int n in numbers) {
+    total += n;
+}
+println("Sum: " + total);
+
+// Foreach over map keys
+println("\nMap iteration:");
+foreach (string key in scores) {
+    println(key + " => " + scores[key]);
+}
+
+// ── 6. SWITCH ────────────────────────────────────────────────────
+println("\n=== Switch ===");
+
+int day = 3;
+switch (day) {
+    case 1: { println("Monday");    }
+    case 2: { println("Tuesday");   }
+    case 3: { println("Wednesday"); }
+    case 4: { println("Thursday");  }
+    case 5: { println("Friday");    }
+    default: { println("Weekend");  }
+}
+
+/* Switch on strings */
+string lang = "Zen";
+switch (lang) {
+    case "Python": { println("Indentation based");  }
+    case "Java":   { println("Strongly typed");     }
+    case "Zen":    { println("Clean and fast!");    }
+    default:       { println("Unknown language");   }
+}
+
+/* Switch with logic */
+int score = 85;
+string grade = "F";
+switch (true) {
+    case score >= 90: { grade = "A"; }
+    case score >= 80: { grade = "B"; }
+    case score >= 70: { grade = "C"; }
+    case score >= 60: { grade = "D"; }
+}
+println("Grade: " + grade);
+
+// ── 7. FILE I/O ───────────────────────────────────────────────────
+println("\n=== File I/O ===");
+
+// Write a file
+file outFile = open("test_output.txt", "w");
+writeLine(outFile, "Hello from Zen-Lang!");
+writeLine(outFile, "Line 2: structs, maps, enums");
+writeLine(outFile, "Line 3: file I/O works!");
+close(outFile);
+println("File written.");
+
+// Read it back
+file inFile = open("test_output.txt", "r");
+string line1 = readLine(inFile);
+string line2 = readLine(inFile);
+string line3 = readLine(inFile);
+close(inFile);
+println(line1);
+println(line2);
+println(line3);
+
+// Append mode
+file appendFile = open("test_output.txt", "a");
+writeLine(appendFile, "Line 4: appended!");
+close(appendFile);
+
+// Read all at once
+file readAllFile = open("test_output.txt", "r");
+string content = readAll(readAllFile);
+close(readAllFile);
+println("Full file content:");
+println(content);
+
+// ── 8. COMBINED EXAMPLE: Student Registry ────────────────────────
+println("\n=== Student Registry ===");
+
+struct Student {
+    string name;
+    int    age;
+    float  gpa;
+    string status;
+
+    Student(string name, int age, float gpa) {
+        this.name   = name;
+        this.age    = age;
+        this.gpa    = gpa;
+        this.status = "ENROLLED";
+    }
+
+    string getGrade() {
+        if (this.gpa >= 3.7)      { return "A"; }
+        else if (this.gpa >= 3.0) { return "B"; }
+        else if (this.gpa >= 2.0) { return "C"; }
+        else                       { return "D"; }
+    }
+
+    void print() {
+        println(this.name + " | Age: " + this.age +
+                " | GPA: " + this.gpa +
+                " | Grade: " + this.getGrade() +
+                " | " + this.status);
+    }
+}
+
+array students = [
+    Student("Alice",   20, 3.8),
+    Student("Bob",     22, 2.9),
+    Student("Charlie", 21, 3.5),
+    Student("Diana",   23, 3.9)
+];
+
+foreach (Student st in students) {
+    st.print();
+}
+
+/* Find best student */
+Student best = students[0];
+foreach (Student st in students) {
+    if (st.gpa > best.gpa) {
+        best = st;
+    }
+}
+println("\nTop student: " + best.name + " (GPA: " + best.gpa + ")");
+
+// ── 9. ENUM + SWITCH + STRUCT ─────────────────────────────────────
+println("\n=== Traffic Light Simulation ===");
+
+enum Light { RED, YELLOW, GREEN }
+
+struct TrafficLight {
+    Light state;
+    string location;
+
+    TrafficLight(string location) {
+        this.state    = Light.RED;
+        this.location = location;
+    }
+
+    void next() {
+        switch (this.state) {
+            case Light.RED:    { this.state = Light.GREEN;  }
+            case Light.GREEN:  { this.state = Light.YELLOW; }
+            case Light.YELLOW: { this.state = Light.RED;    }
+        }
+    }
+
+    string getAction() {
+        switch (this.state) {
+            case Light.RED:    { return "STOP";    }
+            case Light.GREEN:  { return "GO";      }
+            case Light.YELLOW: { return "CAUTION"; }
+            default:           { return "UNKNOWN"; }
+        }
+    }
+}
+
+TrafficLight light = TrafficLight("Main St");
+for (int i = 0; i < 6; i++) {
+    println(light.location + " -> " + light.state + " -> " + light.getAction());
+    light.next();
+}
